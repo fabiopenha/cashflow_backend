@@ -1,18 +1,14 @@
-import express from 'express';
 import 'dotenv/config';
-
-import { DbConnect } from '../models/db';
+import express from 'express';
+import { DbConnect } from '../database/db';
 
 DbConnect();
 
 const server = express();
+server.use(express.json());
+server.use(express.static('uploads'));
+server.use(express.urlencoded({extended: true}));
 
-interface Ititle {
-	
-}
 
-server.get('/', (req, res) => {
-  return res.send('It\'s working!');
-});
 
 export { server };
