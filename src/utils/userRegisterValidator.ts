@@ -1,4 +1,3 @@
-import { NextFunction, Request, Response } from 'express';
 import * as yup from 'yup';
 
 export interface IUserRegister {
