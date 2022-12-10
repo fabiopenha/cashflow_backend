@@ -15,5 +15,5 @@ export const schema: yup.SchemaOf<IUserRegister> = yup.object().shape({
   email: yup.string().email().required('O e-mail deve ser inserido.'),
   phone: yup.string().required('Insira um telefone válido'),
   occupation: yup.string().required('Insira a sua profissão.'),
-  password: yup.string().min(8).max(24).required('Insira o seu e-mail.')
+  password: yup.string().min(8).max(24).required('Insira a senha correta.')
 });
