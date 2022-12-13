@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
 import { User } from '../models/User';
-import { IUserRegister, schema } from '../utils/userRegisterValidator';
+import { IUserRegister } from '../utils/userRegisterValidator';
 
 
 export class UserController {
 
   static async Register(req: Request<{}, {}, IUserRegister>, res: Response){
-
+    
     
     try {
       
