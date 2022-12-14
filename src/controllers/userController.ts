@@ -13,9 +13,11 @@ export class UserController {
       
       console.log('your ass');
 
-      // const userExists = User.findOne({email:validatedData.email});
+      const userExists = await User.findOne({ email: req.body.email });
 
-      // if(!userExists) return res.status(404).json({message: 'User already exist'});
+      if(userExists) res.status(400).json({message: 'User already exist.'});
+
+      console.log(userExists);
 
       // const newUser = await new User(validatedData).save();
 
