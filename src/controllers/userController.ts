@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-
+import bcrypt from 'bcrypt';
 import { User } from '../models/User';
 import { IUserRegister } from '../utils/userRegisterValidator';
 
@@ -10,23 +10,33 @@ export class UserController {
     
     
     try {
-      
-      console.log('your ass');
 
       const userExists = await User.findOne({ email: req.body.email });
 
-      if(userExists) res.status(400).json({message: 'User already exist.'});
+      if(userExists) {
+        return res.status(400).json({message: 'User already exist.'});
+      }
 
-      console.log(userExists);
+      const { passwordConfirm, ...user} = req.body;
 
-      // const newUser = await new User(validatedData).save();
+      const SALT = await bcrypt.genSalt(12);
 
-      // res.status(201).json({message: 'User created!'});
+      const passwordHash = bcrypt.hashSync(user.password, SALT);
 
+      const newUser = await new User({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        occupation: user.occupation,
+        password: passwordHash
+      });
 
+      newUser.save();
+
+      res.status(201).json({message: 'User created!', newUser});
 
     }catch(error) {
-      res.json({message: error});
+      res.status(500).json({message: error});
     }
   }
     
