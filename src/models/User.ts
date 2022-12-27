@@ -31,5 +31,9 @@ export const User = db.model(
       type: String,
       required: true,
     },
-  })
+    tfa_secret: {
+      type: String,
+      default: ''
+    }
+  }, {timestamps: true })
 );

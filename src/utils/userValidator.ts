@@ -9,8 +9,13 @@ export interface IUserRegister {
   passwordConfirm: string;
 }
 
+export interface IUserLogin {
+  email?: string;
+  password: string;
+}
 
-export const schema: yup.SchemaOf<IUserRegister> = yup.object().shape({
+
+export const registerValidator: yup.SchemaOf<IUserRegister> = yup.object().shape({
   name: yup.string().required('O nome deve ser inserido.'),
   email: yup.string().email().required('O e-mail deve ser inserido.'),
   phone: yup.string().min(10, 'Insira um telefone válido.')
@@ -26,4 +31,9 @@ export const schema: yup.SchemaOf<IUserRegister> = yup.object().shape({
     .string()
     .required('Por favor, confirme a sua senha.')
     .oneOf([yup.ref('password')], 'A senha é diferente.'),
+});
+
+export const LoginValidator: yup.SchemaOf<IUserLogin> = yup.object().shape({
+  email: yup.string().email().required('O e-mail deve ser inserido.'),
+  password: yup.string().required('Insira a senha correta.')
 });
