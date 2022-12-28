@@ -53,4 +53,9 @@ route.put(
   UserController.UpdateUser
 );
 
+route.post(
+  '/v1/auth/forgotpassword',
+  UserController.ForgotPassword
+);
+
 export const userRoutes = route;

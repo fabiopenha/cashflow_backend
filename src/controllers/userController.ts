@@ -3,9 +3,12 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import speakeasy from 'speakeasy';
 import { User } from '../models/User';
+import { Token } from '../models/Token';
 import { Request, Response } from 'express';
 import { createToken } from '../utils/token/CreateUserToken';
 import { IUserLogin, IUserRegister } from '../utils/userValidator';
+import * as crypto from 'crypto';
+import { sendEmail } from '../utils/sendEmail';
 
 export class UserController {
   static async Register(req: Request<{}, {}, IUserRegister>, res: Response) {
@@ -214,6 +217,39 @@ export class UserController {
         
     } catch (error) {
       res.status(500).json({ error: 'Erro ao atualizar.' });
+    }
+  }
+
+  static async ForgotPassword (req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      const user = await User.findOne({ email });
+
+      if(!user) return res.status(404).send({message: 'email não encontrado.'});
+
+      const token = await Token.findOne({ userId: user?._id });
+
+      if(token) await Token.deleteOne();
+
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const SALT = await bcrypt.genSalt(12);
+
+      const tokenHash = await bcrypt.hash(resetToken, SALT);
+
+      await new Token({
+        token: tokenHash,
+        userId: user._id,
+        createdAt: Date.now()
+      }).save();
+
+
+      const url = `http://localhost:3000/reset/${resetToken}`;
+
+      sendEmail(url, 'fabinhorockfabinho@gmail.com', res);
+
+    } catch (error) {
+      res.status(500).send({message: 'Erro interno.'});
     }
   }
 }
