@@ -246,7 +246,7 @@ export class UserController {
 
       const url = `http://localhost:3000/reset/${resetToken}`;
 
-      sendEmail(url, 'fabinhorockfabinho@gmail.com', res);
+      sendEmail(url, email, res);
 
     } catch (error) {
       res.status(500).send({message: 'Erro interno.'});

@@ -7,20 +7,20 @@ export const sendEmail = async (url: string, email: any, res: Response): Promise
     port: 587,
     secure: false,
     auth: {
-      user: 'cashflowbrz@gmail.com',
+      user: `${process.env.EMAIL_ROOT}`,
       pass: `${process.env.EMAIL_SENHA}`
     },
     tls: {rejectUnauthorized: false}
   });
 
   const mailOption = {
-    from: 'cashflowbrz@gmail.com',
+    from: `${process.env.EMAIL_ROOT}`,
     to: email,
     subject: 'Test',
     text: 'Se você consegue ler é porque o e-mail foi enviado.'
   };
 
-  await transporter.sendMail(mailOption, (error, info) => {
+  await transporter.sendMail(mailOption, (error, _info) => {
     if (error) {
       return res.status(500).send({error: 'Erro interno.'});
     }
