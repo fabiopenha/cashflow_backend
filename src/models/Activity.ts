@@ -17,11 +17,13 @@ export const Activity = db.model(
       type: String,
       required: true,
     },
-    money_value: {
+    cash: {
       type: Number,
     },
-    user: {
-      type: Object
+    userId: {
+      type: Object,
+      ref: 'user',
+      required: true
     }
   }, {timestamps: true })
 );
