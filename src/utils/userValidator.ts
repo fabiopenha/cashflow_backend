@@ -14,6 +14,11 @@ export interface IUserLogin {
   password: string;
 }
 
+export interface IUserPassword {
+  password: string;
+  passwordConfirm: string;
+}
+
 
 export const registerValidator: yup.SchemaOf<IUserRegister> = yup.object().shape({
   name: yup.string().required('O nome deve ser inserido.'),
@@ -36,4 +41,16 @@ export const registerValidator: yup.SchemaOf<IUserRegister> = yup.object().shape
 export const LoginValidator: yup.SchemaOf<IUserLogin> = yup.object().shape({
   email: yup.string().email().required('O e-mail deve ser inserido.'),
   password: yup.string().required('Insira a senha correta.')
+});
+
+export const PasswordValidator: yup.SchemaOf<IUserPassword> = yup.object().shape({
+  password: yup
+    .string()
+    .min(8, 'a senha deve ter no mínimo 8 caracteres.')
+    .max(24, 'a senha deve ter no máximo 24 caracteres.')
+    .required('Insira a senha correta.'),
+  passwordConfirm: yup
+    .string()
+    .required('Por favor, confirme a sua senha.')
+    .oneOf([yup.ref('password')], 'A senha é diferente.')
 });

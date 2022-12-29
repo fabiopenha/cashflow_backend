@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/userController';
-import { RegisterValidate, LoginValidate } from '../Middlewares/validationMiddleware';
-import { registerValidator, LoginValidator } from '../utils/userValidator';
+import { RegisterValidate, LoginValidate, PasswordValidate } from '../Middlewares/validationMiddleware';
+import { registerValidator, LoginValidator, PasswordValidator } from '../utils/userValidator';
 
 const route = Router();
 
@@ -56,6 +56,12 @@ route.put(
 route.post(
   '/v1/auth/forgotpassword',
   UserController.ForgotPassword
+);
+
+route.post(
+  '/v1/auth/resetpassword/:token',
+  PasswordValidate(PasswordValidator),
+  UserController.ResetPassword
 );
 
 export const userRoutes = route;

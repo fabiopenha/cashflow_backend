@@ -6,7 +6,7 @@ import { User } from '../models/User';
 import { Token } from '../models/Token';
 import { Request, Response } from 'express';
 import { createToken } from '../utils/token/CreateUserToken';
-import { IUserLogin, IUserRegister } from '../utils/userValidator';
+import { IUserLogin, IUserRegister, IUserPassword } from '../utils/userValidator';
 import * as crypto from 'crypto';
 import { sendEmail } from '../utils/sendEmail';
 
@@ -230,15 +230,12 @@ export class UserController {
 
       const token = await Token.findOne({ userId: user?._id });
 
-      if(token) await Token.deleteOne();
+      if(token) await token.deleteOne();
 
       const resetToken = crypto.randomBytes(32).toString('hex');
-      const SALT = await bcrypt.genSalt(12);
-
-      const tokenHash = await bcrypt.hash(resetToken, SALT);
 
       await new Token({
-        token: tokenHash,
+        token: resetToken,
         userId: user._id,
         createdAt: Date.now()
       }).save();
@@ -251,5 +248,29 @@ export class UserController {
     } catch (error) {
       res.status(500).send({message: 'Erro interno.'});
     }
+  }
+
+  static async ResetPassword (req: Request<{token: string}, {}, IUserPassword>, res: Response) {
+    const token = req.params.token;
+    const {password, passwordConfirm} = req.body;
+
+    if(password !== passwordConfirm) return res.status(401).send('Url inválido.');
+
+    const user = await Token.findOne({token});
+
+    if(!user) return res.send('usuário não existe');
+
+    const SALT = await bcrypt.genSalt(12);
+
+    const passwordHash = bcrypt.hashSync(password, SALT);
+
+    await User.updateOne(
+      { _id: user.userId },
+      { $set: { password: passwordHash } },
+      { new: true }
+    );
+
+    res.status(200).send({message: 'Senha atualizada.'});
+
   }
 }
