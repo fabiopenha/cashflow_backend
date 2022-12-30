@@ -26,6 +26,11 @@ route.put(
   ActivityValidate(activityValidator),
   ActivityController.UpdateActivity
 );
+
+route.delete(
+  '/v1/activity/:id',
+  ActivityController.DeleteActivity
+);
   
 export const activityRoutes = route;
   

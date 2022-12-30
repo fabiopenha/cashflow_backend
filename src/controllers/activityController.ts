@@ -165,4 +165,21 @@ export class ActivityController {
       res.status(500).json({ error: 'Erro ao atualizar.' });
     }
   }
+
+  static async DeleteActivity (req: Request<{id:string}, {}, {}>, res: Response) {
+    
+    try {
+      const id = req.params.id;
+
+      const activity = await Activity.findByIdAndDelete({_id: id}).exec();
+      console.log(activity);
+
+      if(!activity) return res.status(404).send({error: 'Atividade não encontrada'});
+
+      res.status(200).send({message: 'Atividade deletada.'});
+    } catch (error) {
+      return res.status(500).send({error: 'Erro interno.'});
+    }
+
+  }
 }
