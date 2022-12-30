@@ -1,76 +1,148 @@
-
-import { User } from '../models/User';
 import { Request, Response } from 'express';
-import { createToken } from '../utils/token/CreateUserToken';
-import { IUserRegister } from '../utils/userValidator';
-
+import { IActivity } from '../utils/activityValidator';
+import { Activity } from '../models/Activity';
 
 export class ActivityController {
-  static async CreateActivity(req: Request<{}, {}, {}>, res: Response) {
+  static async CreateActivity(req: Request<{id:string}, {}, IActivity>, res: Response) {
     try {
-      const userExists = await User.findOne({ email: req.body.email });
 
-      if (userExists) {
-        return res.status(400).json({ message: 'User already exist.' });
-      }
+      let status;
 
-      const { passwordConfirm, ...user } = req.body;
+      req.body.category == 'Salário' || 
+      req.body.category == 'Renda extra' 
+        ? status = 'Receita' 
+        : status = 'Despesa';
 
-      const SALT = await bcrypt.genSalt(12);
-
-      const passwordHash = bcrypt.hashSync(user.password, SALT);
-
-      const newUser = await new User({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        occupation: user.occupation,
-        password: passwordHash,
+      const newActivity = await new Activity({
+        date: req.body.date,
+        category: req.body.category,
+        description: req.body.description,
+        cash: req.body.cash,
+        userId: req.params.id,
+        status
       });
 
-      newUser.save();
+      newActivity.save();
 
-      const token = createToken(newUser);
+      console.log(newActivity);
 
-      if (!token) {
-        return res.status(402).json({ error: 'Token não identificado' });
-      }
-
-      res.status(201).json({ message: 'User created!', user: newUser, token });
+      res.status(201).json({ message: 'Atividade criada!', newActivity});
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(500).json({ error: error });
     }
   }
 
-  static async GetAllActivities (req: Request, res: Response) {
-    const users = await User.find({}).select('-password').sort({name: 1});
+  static async GetActivitiesByUser (req: Request, res: Response) {
 
-    res.send(users);
+    try {
+      
+      const userId = req.params.id;
+
+      const userActivities = await Activity.find({userId}).populate({
+        path: 'userId',
+        match: {_id: userId}
+  
+      }).exec();
+
+      res.status(200)
+        .send({
+          message:'Dados encontrados.',
+          userActivities
+        });
+
+    } catch (error) {
+      res.status(404).send({error: 'dados não encontrados.'});
+    }
+     
+  }
+  
+  static async GetActibityDataByUser (req: Request, res: Response) {
+    const userId = req.params.id;
+
+    // const userActivities = await Activity.find({userId}).populate({
+    //   path: 'userId',
+    //   match: {_id: userId}
+
+    // }).exec();
+
+    try {
+        
+      const sumReceita = await Activity.aggregate([
+        { $match: {userId, 'status': 'Receita'} },
+        {$project: {
+          cash: '$cash',
+          status: '$status'
+        }},
+        {
+          $group: {
+            _id: '$status',
+            totalReceita: { $sum: '$cash' }
+          }
+        }
+      ]).exec();
+    
+      const sumDespesa = await Activity.aggregate([
+        { $match: {userId, 'status': 'Despesa'} },
+        {$project: {
+          cash: '$cash',
+          status: '$status'
+        }},
+        {
+          $group: {
+            _id: '$status',
+            totalDespesa: { $sum: '$cash' }
+          }
+        }
+      ]);
+    
+      const sumRendaExtra = await Activity.aggregate([
+        { $match: {userId, 'category': 'Renda extra'} },
+        {$project: {
+          cash: '$cash',
+          category: '$category'
+        }},
+        {
+          $group: {
+            _id: '$category',
+            totalRendaExtra: { $sum: '$cash' }
+          }
+        }
+      ]);
+    
+      const sumSalário = await Activity.aggregate([
+        { $match: {userId, 'category': 'Salário'} },
+        {$project: {
+          cash: '$cash',
+          category: '$category'
+        }},
+        {
+          $group: {
+            _id: '$category',
+            totalSalario: { $sum: '$cash' }
+          }
+        }
+      ]);
+    
+      res.status(200)
+        .send({
+          message:'Dados encontrados.',
+          sumReceita, sumDespesa, sumRendaExtra, sumSalário});
+
+    } catch (error) {
+      res.status(404).send({error: 'dados não encontrados.'});
+    }
+      
   }
 
   static async UpdateActivity (req: Request<{id:string}, {}, {}>, res: Response) {
     try {
-      const id = req.params.id;
-      
-      const { passwordConfirm, ...user } = req.body;
+      const id = req.params.id;      
 
-      const SALT = await bcrypt.genSalt(12);
+      //const userExists = await User.findById({_id: id});
 
-      const passwordHash = bcrypt.hashSync(user.password, SALT);
+      //if(!userExists) return res.status(422).json({ message: 'ID inválido.' });
 
-      const newUser = {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        occupation: user.occupation,
-        password: passwordHash,
-      };
-
-      const userExists = await User.findById({_id: id});
-
-      if(!userExists) return res.status(422).json({ message: 'ID inválido.' });
-
-      await User.updateOne({_id:id}, newUser);
+      //await User.updateOne({_id:id}, newUser);
 
       return res.status(201).json({ message: 'Usuário atualizado.' });
         

@@ -24,6 +24,9 @@ export const Activity = db.model(
       type: Object,
       ref: 'user',
       required: true
-    }
+    },
+    status: {
+      type: String,
+    },
   }, {timestamps: true })
 );
