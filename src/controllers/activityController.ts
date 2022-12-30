@@ -134,17 +134,32 @@ export class ActivityController {
       
   }
 
-  static async UpdateActivity (req: Request<{id:string}, {}, {}>, res: Response) {
+  static async UpdateActivity (req: Request<{id:string}, {}, IActivity>, res: Response) {
     try {
       const id = req.params.id;      
 
-      //const userExists = await User.findById({_id: id});
+      const activityExists = await Activity.findById({_id: id});
 
-      //if(!userExists) return res.status(422).json({ message: 'ID inválido.' });
+      if(!activityExists) return res.status(422).json({ message: 'ID inválido.' });
 
-      //await User.updateOne({_id:id}, newUser);
+      let status;
 
-      return res.status(201).json({ message: 'Usuário atualizado.' });
+      req.body.category == 'Salário' || 
+      req.body.category == 'Renda extra' 
+        ? status = 'Receita' 
+        : status = 'Despesa';
+
+      const activity = ({
+        date: req.body.date,
+        category: req.body.category,
+        description: req.body.description,
+        cash: req.body.cash,
+        status
+      });
+
+      await Activity.updateOne({_id: id}, activity);
+
+      return res.status(201).json({ message: 'Atividade atualizado.' });
         
     } catch (error) {
       res.status(500).json({ error: 'Erro ao atualizar.' });

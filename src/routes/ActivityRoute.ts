@@ -21,9 +21,10 @@ route.get(
   ActivityController.GetActibityDataByUser
 );
   
-route.post(
-  '/v1/auth/authenticator',
-  //UserController.Authenticator
+route.put(
+  '/v1/activity/update/:id',
+  ActivityValidate(activityValidator),
+  ActivityController.UpdateActivity
 );
   
 export const activityRoutes = route;
