@@ -1,0 +1,133 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Atividades",
+    "description": "Essa API faz parte do portifólio do Fábio Penha.",
+    "contact": {
+      "name": "Fábio Penha",
+      "url": "http://www.github.com/fabiopenha",
+      "email": "fabiopenha95@outlook.com"
+    },
+    "x-logo": {
+      "url": "https://img.freepik.com/premium-vector/cash-flow-dollar-bill-investment-fund-flow-currency-exchange-vector-stock-illustration_100456-9962.jpg?w=2000"
+    },
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Atividades"
+    }
+  ],
+    "paths": {
+      "/v1/activity/create/{id}": {
+        "post": {
+          "tags": [
+            "Atividades"
+            ],
+          "description": "Criação de atividades",
+          "parameters":[
+            {
+              "name": "id",
+              "in": "path",
+              "description":"Id do usuário.",
+              "required": true,
+              "type": "string",
+              "format": "objectId"
+            }
+          ],
+          "requestBody": {
+            "description": "Dados necessários para cadastro de uma atividade.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestAtividade"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Atividade criada!",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseAtividade"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno."
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "RequestAtividade": {
+          "type": "object",
+          "properties": {
+            "date":{ 
+              "type":"string",
+              "description": "data do dia que a atividade foi realizada.",
+              "example": "2022-10-30"
+            },
+            "category": {
+              "type":"string",
+              "description": "Categoria da atividade.",
+              "enum": ["Salário", "Renda extra", "Alimentação", "Saúde", "Lazer"],
+              "example": "Salário"
+            },
+            "description": {
+              "type":"string",
+              "description": "Descrição da atividade.",
+              "example": "Salário do mês."
+            },
+            "cash": {
+              "type":"number",
+              "description": "Valor da atividade.",
+              "example": 300
+            }
+          }
+        },
+        "ResponseAtividade": {
+          "type": "object",
+          "properties": {
+            "date":{ 
+              "type":"string",
+              "description": "data do dia que a atividade foi realizada.",
+              "example": "2022-10-30"
+            },
+            "category": {
+              "type":"string",
+              "description": "Categoria da atividade.",
+              "enum": ["Salário", "Renda extra", "Alimentação", "Saúde", "Lazer"],
+              "example": "Salário"
+            },
+            "description": {
+              "type":"string",
+              "description": "Descrição da atividade.",
+              "example": "Salário do mês."
+            },
+            "cash": {
+              "type":"number",
+              "description": "Valor da atividade.",
+              "example": 300
+            },
+            "userId": {
+              "type": "string",
+              "description": "Id do usuário.",
+              "format": "uuid"
+            },
+            "id": {
+              "type": "string",
+              "description": "Id da atividade.",
+              "format": "uuid"
+            }
+          }
+        }
+
+      }
+    }
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8"/>
+  <title>Cashflow</title>
+</head>
+<body>
+  <div id="redoc_container"></div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/redoc-try-it-out/dist/try-it-out.min.js">
+    
+  </script>
+  
+  <script>
+    RedocTryItOut.init(
+        "http://localhost:3333/swagger",
+        document.getElementById("redoc_container")
+    )
+  </script>
+</body>
+</html>
