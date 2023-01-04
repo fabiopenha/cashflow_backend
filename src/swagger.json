@@ -61,6 +61,68 @@
             }
           }
         }
+      },
+      "/v1/activity/getuseractivities/{id}": {
+        "get": {
+          "description": "Listar as atividades de um usuário específico.",
+          "parameters":[
+            {
+              "name": "id",
+              "in": "path",
+              "description":"Id do usuário.",
+              "required": true,
+              "type": "string",
+              "format": "objectId"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Dados encontrados.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/getuseractivities"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno."
+            }
+          }
+        }
+      },
+      "/v1/activity/getactivitiesdata/{id}": {
+        "get": {
+          "description": "Listar as atividades de um usuário específico.",
+          "parameters":[
+            {
+              "name": "id",
+              "in": "path",
+              "description":"Id do usuário.",
+              "required": true,
+              "type": "string",
+              "format": "objectId"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Dados encontrados.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/getactivitiesdata"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error interno."
+            }
+          }
+        }
       }
     },
     "components": {
@@ -125,6 +187,95 @@
               "description": "Id da atividade.",
               "format": "uuid"
             }
+          }
+        },
+        "getuseractivities": {
+          "type": "object",
+          "properties": {
+            "date":{ 
+              "type":"string",
+              "description": "data do dia que a atividade foi realizada.",
+              "example": "2022-10-30"
+            },
+            "category": {
+              "type":"string",
+              "description": "Categoria da atividade.",
+              "enum": ["Salário", "Renda extra", "Alimentação", "Saúde", "Lazer"],
+              "example": "Salário"
+            },
+            "description": {
+              "type":"string",
+              "description": "Descrição da atividade.",
+              "example": "Salário do mês."
+            },
+            "cash": {
+              "type":"number",
+              "description": "Valor da atividade.",
+              "example": 300
+            }
+          }
+        },
+        "getactivitiesdata": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type":"string",
+              "example":"Dados encontrados."
+            },
+            "sumReceita": {
+             "type":"array",
+             "items": {
+              "type":"object",
+              "properties": {
+                "_id": {
+                  "type":"string",
+                  "example": "Receita" 
+                },
+                "totalReceita": {
+                  "type":"number",
+                  "description":"total de valores ganhos.",
+                  "example": 2000
+                }
+              }
+             }
+              
+            },
+            "sumDespesa": {
+              "type":"array",
+              "items": {
+               "type":"object",
+               "properties": {
+                 "_id": {
+                   "type":"string",
+                   "example": "Despesa" 
+                 },
+                 "totalDespesa": {
+                   "type":"number",
+                   "description":"total de valores gastos.",
+                   "example": 800
+                 }
+               }
+              }
+               
+             },
+             "sumRendaExtra": {
+              "type":"array",
+              "items": {
+               "type":"object",
+               "properties": {
+                 "_id": {
+                   "type":"string",
+                   "example": "Renda extra" 
+                 },
+                 "totalRendaExtra": {
+                   "type":"number",
+                   "description":"total de renda extra.",
+                   "example": 500
+                 }
+               }
+              }
+               
+             }
           }
         }
 
