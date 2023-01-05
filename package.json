@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node-dev ./src/index.ts"
+    "start": "node ./build/src/index.js"
   },
   "author": "Fábio Penha",
   "license": "ISC",
