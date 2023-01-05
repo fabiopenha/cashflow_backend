@@ -64,6 +64,9 @@
       },
       "/v1/activity/getuseractivities/{id}": {
         "get": {
+          "tags": [
+            "Atividades"
+            ],
           "description": "Listar as atividades de um usuário específico.",
           "parameters":[
             {
@@ -95,6 +98,9 @@
       },
       "/v1/activity/getactivitiesdata/{id}": {
         "get": {
+          "tags": [
+            "Atividades"
+            ],
           "description": "Listar as atividades de um usuário específico.",
           "parameters":[
             {
@@ -120,6 +126,119 @@
             },
             "500": {
               "description": "Error interno."
+            }
+          }
+        }
+      },
+      "/v1/activity/update/{id}": {
+        "put": {
+          "tags": [
+            "Atividades"
+            ],
+          "description": "Criação de atividades",
+          "parameters":[
+            {
+              "name": "id",
+              "in": "path",
+              "description":"Id da atividade.",
+              "required": true,
+              "type": "string",
+              "format": "objectId"
+            }
+          ],
+          "requestBody": {
+            "description": "Dados necessários para atualização de uma atividade.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestAtividade"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Atividade atualizado.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ResponseAtividade"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro ao atualizar."
+            }
+          }
+        }
+      },
+      "/v1/activity/{id}": {
+        "delete": {
+          "tags": [
+            "Atividades"
+            ],
+          "description": "Deletar atividade.",
+          "parameters":[
+            {
+              "name": "id",
+              "in": "path",
+              "description":"Id da atividade.",
+              "required": true,
+              "type": "string",
+              "format": "objectId"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Atividade deletada.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type":"string",
+                        "example":"Atividade deletada."
+                      }
+                    }
+                  }
+                }
+              }
+              
+            },
+            "404": {
+              "description": "Atividade não encontrada",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type":"string",
+                        "example":"Atividade não encontrada"
+                      }
+                    }
+                  }
+                }
+              }
+              
+            },
+            "500": {
+              "description": "Erro interno.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type":"string",
+                        "example":"Erro interno."
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -192,27 +311,113 @@
         "getuseractivities": {
           "type": "object",
           "properties": {
-            "date":{ 
+            "message":{ 
               "type":"string",
-              "description": "data do dia que a atividade foi realizada.",
-              "example": "2022-10-30"
+              "description": "Mensagem de retorno.",
+              "example": "Dados encontrados."
             },
-            "category": {
-              "type":"string",
-              "description": "Categoria da atividade.",
-              "enum": ["Salário", "Renda extra", "Alimentação", "Saúde", "Lazer"],
-              "example": "Salário"
-            },
-            "description": {
-              "type":"string",
-              "description": "Descrição da atividade.",
-              "example": "Salário do mês."
-            },
-            "cash": {
-              "type":"number",
-              "description": "Valor da atividade.",
-              "example": 300
-            }
+            "userActivities": {
+              "type":"array",
+              "items": {
+                "type":"object",
+                "properties": {
+                  "_id":{ 
+                    "type":"objectId",
+                    "description": "data do dia que a atividade foi realizada.",
+                    "example": "78ae393ea456bad3f3b44a00"
+                  },
+                  "date":{ 
+                    "type":"string",
+                    "description": "data do dia que a atividade foi realizada.",
+                    "example": "2022-10-30"
+                  },
+                  "category": {
+                    "type":"string",
+                    "description": "Categoria da atividade.",
+                    "enum": ["Salário", "Renda extra", "Alimentação", "Saúde", "Lazer"],
+                    "example": "Salário"
+                  },
+                  "description": {
+                    "type":"string",
+                    "description": "Descrição da atividade.",
+                    "example": "Salário do mês."
+                  },
+                  "cash": {
+                    "type":"number",
+                    "description": "Valor da atividade.",
+                    "example": 300
+                  },
+                  "userId": {
+                    "type":"object",
+                    "properties": {
+                      "_id": {
+                        "type":"objectId",
+                        "description": "Id do usuário.",
+                        "example": "78ae393ea456bad3f3b44a00"
+                      },
+                      "nome": {
+                        "type":"string",
+                        "description": "Nome do usuário.",
+                        "example": "John"
+                      },
+                      "email": {
+                        "type":"email",
+                        "description": "E-mail do usuário.",
+                        "example": "jonh@gmail.com"
+                      },
+                      "phone": {
+                        "type":"string",
+                        "description": "Telefone do usuário.",
+                        "example": "99999999999"
+                      },
+                      "occupation": {
+                        "type":"string",
+                        "description": "Telefone do usuário.",
+                        "example": "Analista de sistemas"
+                      },
+                      "password": {
+                        "type":"uuid",
+                        "description": "Senha do usuário.",
+                        "example": "sfasfnln3kln25k3n23k2nknfl3knnf"
+                      },
+                      "tfa_secret": {
+                        "type":"uuid",
+                        "description": "Chave de acesso para 2FA Auth.",
+                        "example": "sfasfnln3kln25k3n23k2nknfl3knnf"
+                      },
+                      "createdAt": {
+                        "type":"string",
+                        "description": "Data da criação da atividade.",
+                        "example": "2022-12-29T23:40:01.034Z"
+                      },
+                      "updatedAt": {
+                        "type":"string",
+                        "description": "Data da Atualização da atividade.",
+                        "example": "2022-12-29T23:40:01.034Z"
+                      }
+                      
+                    }
+
+                  },
+                  "status": {
+                    "type":"string",
+                    "description": "nomenclatura da atividade.",
+                    "example": "Receita"
+                  },
+                  "createdAt": {
+                    "type":"string",
+                    "description": "Data da criação da atividade.",
+                    "example": "2022-12-29T23:40:01.034Z"
+                  },
+                  "updatedAt": {
+                    "type":"string",
+                    "description": "Data da Atualização da atividade.",
+                    "example": "2022-12-29T23:40:01.034Z"
+                  }
+                }
+              }
+            } 
+            
           }
         },
         "getactivitiesdata": {
