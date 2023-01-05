@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./build/src/index.js"
+    "start": "ts-node-dev ./src/index.ts",
+    "production": "node ./build/index.js"
   },
   "author": "Fábio Penha",
   "license": "ISC",
