@@ -6,12 +6,21 @@ import { userRoutes } from '../routes/UserRoute';
 import { activityRoutes } from '../routes/ActivityRoute';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
-import { dirname } from 'path';
+import cors from 'cors';
 
 DbConnect();
 
 const server = express();
 server.use(express.json());
+server.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://thecashflow.onrender.com',
+    ],
+    credentials: true
+  })
+);
 
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
