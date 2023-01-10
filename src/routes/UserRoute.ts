@@ -33,6 +33,12 @@ route.post(
 );
 
 route.post(
+  '/v1/auth/authenticatedUser',
+  UserController.AuthenticatedUser
+);
+
+
+route.post(
   '/v1/auth/refreshtoken',
   UserController.RefreshToken
 );

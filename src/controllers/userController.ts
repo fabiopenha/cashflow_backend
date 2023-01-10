@@ -153,6 +153,33 @@ export class UserController {
 
   }
 
+
+  static async AuthenticatedUser(req: Request, res: Response){
+    try{
+      const cookie = req.cookies['access_token'];
+ 
+      const payload: any = jwt.verify(cookie, process.env.ACCESS_SECRET || '');
+ 
+      if(!payload) res.status(401).json({message:'Unauthenticated'});
+ 
+      const user = await User.findById({
+        id: payload.id
+      });
+
+      let loggedin = false;
+      if(cookie) {
+        loggedin = true;
+      }
+ 
+      if(!user) res.status(401).json({message:'Unauthenticated'});
+ 
+      res.send({user, loggedin});
+    }catch(e){
+      return res.status(401).json({message:'Unauthenticated'});
+    }
+  }
+
+
   static async RefreshToken (req: Request, res: Response) {
     try {
       const cookie = req.cookies['refresh_token'];
