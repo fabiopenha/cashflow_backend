@@ -32,7 +32,7 @@ route.post(
   UserController.Authenticator
 );
 
-route.post(
+route.get(
   '/v1/auth/authenticatedUser',
   UserController.AuthenticatedUser
 );
