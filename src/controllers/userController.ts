@@ -102,10 +102,6 @@ export class UserController {
       return res.status(400).json({message: 'Credencial inválida'});
     }
 
-    if(user.tfa_secret === '') {
-      await User.findByIdAndUpdate(id, {tfa_secret: userSecret});
-    }
-
     const accessToken = jwt.sign({ id },
       process.env.ACCESS_SECRET || '', {expiresIn: '30s'});
 
