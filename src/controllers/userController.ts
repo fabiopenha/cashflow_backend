@@ -93,7 +93,7 @@ export class UserController {
     if(!user) return res.status(400).json({message:'Acesso inválido'});
 
     const verified = speakeasy.totp.verify({
-      secret: secret,
+      secret,
       encoding: 'ascii',
       token: code
     });
@@ -140,7 +140,7 @@ export class UserController {
       res.status(200).send({user, loggedIn});
 
     } catch (error) {
-      return res.status(401).json({message: 'Não autorizado'});
+      return res.status(500).json({message: 'Não autorizado'});
     }
 
   }
@@ -151,23 +151,16 @@ export class UserController {
       const cookie = req.cookies['access_token'];
  
       const payload: any = jwt.verify(cookie, process.env.ACCESS_SECRET || '');
+      
+      if(!payload) return res.status(401).json({message:'Não autorizado!'});
+      
+      const user = await User.findById(payload.id);
+    
+      if(!user) res.status(401).json({message:'Não autorizado!'});
  
-      if(!payload) res.status(401).json({message:'Unauthenticated'});
- 
-      const user = await User.findById({
-        id: payload.id
-      });
-
-      let loggedin = false;
-      if(cookie) {
-        loggedin = true;
-      }
- 
-      if(!user) res.status(401).json({message:'Unauthenticated'});
- 
-      res.send({user, loggedin});
+      res.send(user);
     }catch(e){
-      return res.status(401).json({message:'Unauthenticated'});
+      return res.status(401).json({message:'Não autorizado!'});
     }
   }
 
