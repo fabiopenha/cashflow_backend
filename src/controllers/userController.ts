@@ -66,13 +66,11 @@ export class UserController {
         name: 'cashflow'
       });
 
-      if(!userExists.tfa_secret) {
-        res.status(200).json({
-          id: userExists._id,
-          secret: secret.ascii,
-          otpauth_url: secret.otpauth_url
-        });
-      }
+      res.status(200).json({
+        id: userExists._id,
+        secret: secret.ascii,
+        otpauth_url: secret.otpauth_url
+      });
 
     } catch (error) {
       res.status(500).json({ message: error });
