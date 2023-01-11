@@ -92,10 +92,8 @@ export class UserController {
 
     if(!user) return res.status(400).json({message:'Acesso inválido'});
 
-    const userSecret = user.tfa_secret !== '' ? user.tfa_secret : secret;
-
     const verified = speakeasy.totp.verify({
-      secret: userSecret,
+      secret: secret,
       encoding: 'ascii',
       token: code
     });
