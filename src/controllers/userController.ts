@@ -219,18 +219,17 @@ export class UserController {
 
       if(!user) return res.status(404).send({message: 'email não encontrado.'});
 
-      const token = await Token.findOne({ userId: user?._id });
-
-      if(token) await token.deleteOne();
-
       const resetToken = crypto.randomBytes(32).toString('hex');
+
+      const tokenExists = await Token.findOne({token: resetToken});
+
+      if(tokenExists) await Token.deleteOne({token: resetToken});
 
       await new Token({
         token: resetToken,
         userId: user._id,
         createdAt: Date.now()
       }).save();
-
 
       const url = `http://localhost:3000/reset/${resetToken}`;
 
@@ -260,6 +259,8 @@ export class UserController {
       { $set: { password: passwordHash } },
       { new: true }
     );
+
+    await Token.deleteOne({token: token});
 
     res.status(200).send({message: 'Senha atualizada.'});
 
