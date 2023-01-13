@@ -32,7 +32,6 @@ route.get(
   UserController.AuthenticatedUser
 );
 
-
 route.post(
   '/v1/auth/refreshtoken',
   UserController.RefreshToken

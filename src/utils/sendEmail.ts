@@ -16,8 +16,8 @@ export const sendEmail = async (url: string, email: any, res: Response): Promise
   const mailOption = {
     from: `${process.env.EMAIL_ROOT}`,
     to: email,
-    subject: 'Test',
-    text: 'Se você consegue ler é porque o e-mail foi enviado.'
+    subject: 'Reset password',
+    html:`Click <a href="${url}">here</a> to reset your password.`
   };
 
   await transporter.sendMail(mailOption, (error, _info) => {
