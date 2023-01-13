@@ -121,31 +121,6 @@ export class UserController {
     res.send('Success');
   }
 
-  static async Authenticator (req: Request, res: Response) {
-    try {
-      const cookie = req.cookies['access_token'];
-    
-      const verified: any = jwt.verify(cookie, process.env.ACCESS_SECRET || '');
-
-      if(!verified) return res.status(401).json({message: 'Não autorizado'});
-
-      const user = await User.findById({_id: verified.id});
-
-      if(!user) return res.status(401).json({message: 'Não autorizado'});
-
-      let loggedIn = false;
-
-      cookie ? loggedIn = true : loggedIn = false;
-
-      res.status(200).send({user, loggedIn});
-
-    } catch (error) {
-      return res.status(500).json({message: 'Não autorizado'});
-    }
-
-  }
-
-
   static async AuthenticatedUser(req: Request, res: Response){
     try{
       const cookie = req.cookies['access_token'];
@@ -157,8 +132,12 @@ export class UserController {
       const user = await User.findById(payload.id);
     
       if(!user) res.status(401).json({message:'Não autorizado!'});
+
+      let loggedin = false;
+      
+      cookie ? loggedin = true : loggedin = false;
  
-      res.send(user);
+      res.send({user, loggedin});
     }catch(e){
       return res.status(401).json({message:'Não autorizado!'});
     }
