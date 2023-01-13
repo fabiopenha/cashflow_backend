@@ -27,11 +27,6 @@ route.post(
   UserController.TwoFactor
 );
 
-route.post(
-  '/v1/auth/authenticator',
-  UserController.Authenticator
-);
-
 route.get(
   '/v1/auth/authenticatedUser',
   UserController.AuthenticatedUser
