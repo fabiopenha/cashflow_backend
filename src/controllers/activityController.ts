@@ -24,9 +24,7 @@ export class ActivityController {
 
       newActivity.save();
 
-      console.log(newActivity);
-
-      res.status(201).json({ message: 'Atividade criada!', newActivity});
+      res.status(201).json({ message: 'Atividade criada!'});
     } catch (error) {
       res.status(500).json({ error: error });
     }
